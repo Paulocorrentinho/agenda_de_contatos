@@ -1,12 +1,43 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
+const String contactTable = "contactTable";
 const String idColumn = "idColumn";     //cria uma variavel para o mapa
 const String nameColumn = "nameColumn";     //cria uma variavel para o mapa
 const String emailColumn = "emailColumn";     //cria uma variavel para o mapa
 const String phoneColumn = "phoneColumn";     //cria uma variavel para o mapa
 const String imgColumn = "imgColumn";     //cria uma variavel para o mapa
 
-class ContactHelper {
+class ContactHelper {     //cria uma classe
+
+  static final ContactHelper _instance = ContactHelper.internal();     //cria um objeto e chama um construtor interno
+
+  factory ContactHelper() => _instance;
+
+  ContactHelper.internal();
+
+  Database _db;     //cria um banco de dados
+
+  Future<Database> get db async {
+    if(_db != null) {     //inicializa o banco de dados
+      return _db;
+    } else {
+      _db = await initDb();      //obriga a inicializacão do banco de dados
+      return _db;
+    }
+  }
+
+  Future<Database> initDb() async {     //função initDB
+    final databasesPath = await getDatabasesPath();     //pega o local que esta o banco de dados
+    final path = join(databasesPath, "contacts.db");     //pega o arquivo do banco de dados
+
+    return await openDatabase(path, version: 1, onCreate: (Database db, int newerVersion) async {     //abri o banco de dados
+      await db.execute(     //codigo nao pode ser modificado
+        "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT"
+      "$phoneColumn TEXT, $imgColumn TEXT)"
+      );
+    });
+  }
 
 }
 

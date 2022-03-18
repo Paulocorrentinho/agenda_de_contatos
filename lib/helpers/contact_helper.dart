@@ -16,7 +16,7 @@ class ContactHelper {     //cria uma classe
 
   ContactHelper.internal();
 
-  Database _db;     //cria um banco de dados
+  Database _db = 1;     //cria um banco de dados
 
   Future<Database> get db async {
     if(_db != null) {     //inicializa o banco de dados
@@ -37,6 +37,25 @@ class ContactHelper {     //cria uma classe
       "$phoneColumn TEXT, $imgColumn TEXT)"
       );
     });
+  }
+
+  Future<Contact> saveContact(Contact contact) async{     //salva as informações no banco de dados
+    Database dbContact = await db;     //obtem o banco de dados
+    contact.id = await dbContact.insert(contactTable, contact.toMap());     //insere os daos no id
+    return contact;
+  }
+
+  Future<Contact> getContact (int id) async {     //obtem os dados
+    Database dbContact = await db;     //obtem o banco de dados
+    List<Map> maps = await dbContact.query(contactTable,
+      columns: [idColumn, nameColumn, emailColumn, phoneColumn, imgColumn],
+      where: "$idColumn = ?",
+    whereArgs: [id]);
+    if(maps.length > 0) {
+      return Contact.fromMap(maps.first);
+    } else {
+      return null;
+    }
   }
 
 }
@@ -74,5 +93,5 @@ class Contact {
   String toString() {     //printa as informaçoes do contato
     return"Contact(id: $id, name: $name, email: $email, phone: $phone, img: $img)";
   }
-  
+
 }

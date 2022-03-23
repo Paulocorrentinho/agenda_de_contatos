@@ -16,9 +16,9 @@ class ContactHelper {     //cria uma classe
 
   ContactHelper.internal();
 
-  Database _db = 1;     //cria um banco de dados
+  Database? _db;     //cria um banco de dados
 
-  Future<Database> get db async {
+  get db async {
     if(_db != null) {     //inicializa o banco de dados
       return _db;
     } else {
@@ -45,7 +45,7 @@ class ContactHelper {     //cria uma classe
     return contact;
   }
 
-  Future<Contact> getContact (int id) async {     //obtem os dados
+  Future<Contact?> getContact (int id) async {     //obtem os dados
     Database dbContact = await db;     //obtem o banco de dados
     List<Map> maps = await dbContact.query(contactTable,
       columns: [idColumn, nameColumn, emailColumn, phoneColumn, imgColumn],
@@ -76,7 +76,7 @@ class Contact {
     img = map[imgColumn];
   }
 
-  Map toMap() {     //função que faz o mapa receber o contato
+  Map<String,dynamic> toMap() {     //função que faz o mapa receber o contato
     Map<String, dynamic> map = {
       nameColumn: name,
       emailColumn: email,

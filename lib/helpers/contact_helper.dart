@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -18,7 +19,7 @@ class ContactHelper {     //cria uma classe
 
   Database? _db;     //cria um banco de dados
 
-  get db async {
+  Future get db async {
     if(_db != null) {     //inicializa o banco de dados
       return _db;
     } else {
@@ -29,11 +30,11 @@ class ContactHelper {     //cria uma classe
 
   Future<Database> initDb() async {     //função initDB
     final databasesPath = await getDatabasesPath();     //pega o local que esta o banco de dados
-    final path = join(databasesPath, "contacts.db");     //pega o arquivo do banco de dados
+    final path = join(databasesPath, "contactsnew.db");     //pega o arquivo do banco de dados
 
     return await openDatabase(path, version: 1, onCreate: (Database db, int newerVersion) async {     //abri o banco de dados
       await db.execute(     //codigo nao pode ser modificado
-        "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT"
+        "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT,"
       "$phoneColumn TEXT, $imgColumn TEXT)"
       );
     });
@@ -58,6 +59,36 @@ class ContactHelper {     //cria uma classe
     }
   }
 
+  Future<int> deleteContact(int id) async {     //função para deletar
+    Database dbContact = await db;
+    return await dbContact.delete(contactTable, where: "$idColumn = ?", whereArgs: [id]);
+  }
+
+  Future<int> updateContact(Contact contact) async {     //função para salvar um contato
+    Database dbContact = await db;
+    return await dbContact.update(contactTable, contact.toMap(), where: "$idColumn = ?", whereArgs: [contact.id]);
+  }
+
+  Future<List> getAllContacts() async {     //função para obter os contatos
+    Database dbContact = await db;
+    List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable");     //seleciona todos os elementos da tabela
+    List<Contact> listContact = [];
+    for(Map m in listMap) {
+      listContact.add(Contact.fromMap(m));     //transforma cada mapa em uma lista e adiciona na lista de contatos
+    }
+    return listContact;
+  }
+
+  Future<int?> getNumber() async {     //função para obter o numero de contatos
+    Database dbContact = await db;
+    return Sqflite.firstIntValue(await dbContact.rawQuery("SELECT COUNT(*) $contactTable"));     //obtem a contagem e retorn a quantidade de elementos na tabela
+  }
+
+  Future close() async {     //função para fechar o banco de dados
+    Database dbContact = await db;
+    dbContact.close();
+  }
+
 }
 
 class Contact {
@@ -68,6 +99,8 @@ class Contact {
   String? phone;
   String? img;
 
+  Contact();
+
   Contact.fromMap(Map map) {     //construtor de mapa para o contato
     id = map[idColumn];
     name = map[nameColumn];
@@ -76,8 +109,8 @@ class Contact {
     img = map[imgColumn];
   }
 
-  Map<String,dynamic> toMap() {     //função que faz o mapa receber o contato
-    Map<String, dynamic> map = {
+  Map toMap() {     //função que faz o mapa receber o contato
+    var map = <String, dynamic>{
       nameColumn: name,
       emailColumn: email,
       phoneColumn: phone,

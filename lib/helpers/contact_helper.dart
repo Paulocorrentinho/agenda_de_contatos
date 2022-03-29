@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:async';
 
 const String contactTable = "contactTable";
 const String idColumn = "idColumn";     //cria uma variavel para o mapa
@@ -109,8 +110,8 @@ class Contact {
     img = map[imgColumn];
   }
 
-  Map toMap() {     //função que faz o mapa receber o contato
-    var map = <String, dynamic>{
+  Map<String, dynamic> toMap() {     //função que faz o mapa receber o contato
+    Map<String, dynamic> map = {
       nameColumn: name,
       emailColumn: email,
       phoneColumn: phone,

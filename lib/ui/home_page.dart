@@ -1,4 +1,5 @@
-import 'dart:html';
+
+import 'dart:io';
 
 import 'package:agenda_de_contatos/helpers/contact_helper.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {     //inicia o app com os dados salvos
     super.initState();
 
-    helper.getAllContacts().then((Lit){
+    helper.getAllContacts().then((List){
       setState(() {
         contacts = [];
       });
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                   shape: BoxShape.circle,
                   image: DecorationImage(     //insere uma imagem padrao
                       image: contacts[index].img != null ?
-                      FileImage(File(contacts[index].img)) :
+                      FileImage(File(contacts[index].img.toString())) :
                           AssetImage("images/person.png") as ImageProvider,
                   ),
                 ),

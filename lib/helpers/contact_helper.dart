@@ -20,12 +20,11 @@ class ContactHelper {     //cria uma classe
 
   Database? _db;     //cria um banco de dados
 
-  Future get db async {
+  get db async {
     if(_db != null) {     //inicializa o banco de dados
       return _db;
     } else {
-      _db = await initDb();      //obriga a inicializacão do banco de dados
-      return _db;
+      return await initDb();      //obriga a inicializacão do banco de dados
     }
   }
 

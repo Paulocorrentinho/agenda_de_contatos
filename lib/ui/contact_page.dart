@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:agenda_de_contatos/helpers/contact_helper.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
+
   final Contact contact;
 
-  ContactPage(this.contact);     //construtor
+  ContactPage({this.contact});     //construtor
 
   @override
   State<ContactPage> createState() => _ContactPageState();
@@ -21,7 +24,7 @@ class _ContactPageState extends State<ContactPage> {
     if (widget.contact == null) {
       _editedContact = Contact();
     } else {
-      _editedContact = Contact.fromMap(widget.contact.toMap());
+        _editedContact = Contact.fromMap(widget.contact.toMap());
     }
   }
 
@@ -31,6 +34,7 @@ class _ContactPageState extends State<ContactPage> {
       appBar: AppBar(
         backgroundColor: Colors.red,
         title: Text(_editedContact.name ?? "Novo Contato"),
+        centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -49,7 +53,7 @@ class _ContactPageState extends State<ContactPage> {
                   shape: BoxShape.circle,
                   image: DecorationImage(     //insere uma imagem padrao
                     image: _editedContact.img != null ?
-                    FileImage(File(_editedContact.img)) :
+                    FileImage(File(_editedContact.img.toString())) :
                     AssetImage("images/person.png") as ImageProvider,
                     fit: BoxFit.cover,
                   ),

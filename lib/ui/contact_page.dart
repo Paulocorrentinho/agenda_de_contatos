@@ -4,17 +4,15 @@ import 'package:agenda_de_contatos/helpers/contact_helper.dart';
 import 'package:flutter/material.dart';
 
 class ContactPage extends StatefulWidget {
+  Contact contact;
 
-  final Contact contact;
-
-  ContactPage({this.contact});     //construtor
+  ContactPage({required this.contact}); //construtor
 
   @override
   State<ContactPage> createState() => _ContactPageState();
 }
 
 class _ContactPageState extends State<ContactPage> {
-
   late Contact _editedContact;
 
   @override
@@ -24,7 +22,7 @@ class _ContactPageState extends State<ContactPage> {
     if (widget.contact == null) {
       _editedContact = Contact();
     } else {
-        _editedContact = Contact.fromMap(widget.contact.toMap());
+      _editedContact = Contact.fromMap(widget.contact.toMap());
     }
   }
 
@@ -46,15 +44,17 @@ class _ContactPageState extends State<ContactPage> {
         child: Column(
           children: [
             GestureDetector(
-              child: Container(     //cria um widget de imagem redonda
+              child: Container(
+                //cria um widget de imagem redonda
                 width: 140.0,
                 height: 140.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(     //insere uma imagem padrao
-                    image: _editedContact.img != null ?
-                    FileImage(File(_editedContact.img.toString())) :
-                    AssetImage("images/person.png") as ImageProvider,
+                  image: DecorationImage(
+                    //insere uma imagem padrao
+                    image: _editedContact.img != null
+                        ? FileImage(File(_editedContact.img.toString()))
+                        : AssetImage("images/person.png") as ImageProvider,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -66,4 +66,3 @@ class _ContactPageState extends State<ContactPage> {
     );
   }
 }
-
